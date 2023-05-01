@@ -39,6 +39,7 @@ var sw_interval     = false;        // 확인 주기 적용여부
 var sw_successEvent = false;        // 군수확업 이벤트 트리거
 
 var val_success     = 0.6;          // 대성공 초기성공률 60%
+var val_ILD_bonus   = 0;            // Base gives % bonus from rank rewards.
 var val_interval    = 30;           // 확인 주기 초기값 30분
 var val_sumRate     = new Object(); // 합계 자원비
     val_sumRate.h   = 1;
@@ -230,6 +231,12 @@ $('#btn_toggle_sucs').off().on('click', function (e) {
     calcSuccessRatio();
     refresh();
 });
+
+$('#btn_refresh_ILD').on('click', function (e) {
+    val_ILD_bonus = parseFloat(document.getElementById('ILD_bonus').value) / 100;
+    refresh();
+});
+
 $('#btn_toggle_sucs_event').off().on('click', function (e) {
     if(sw_sucs){
         if($('#btn_toggle_sucs_event').hasClass('btn-default')){
@@ -1553,10 +1560,10 @@ function callData(){
         tmp.Time = arr[i][2];
 
         if(sw_sucs){
-            tmp.Human   = arr[i][3] * (0.5 * val_success + 1);
-            tmp.Ammo    = arr[i][4] * (0.5 * val_success + 1);
-            tmp.Food    = arr[i][5] * (0.5 * val_success + 1);
-            tmp.Part    = arr[i][6] * (0.5 * val_success + 1);
+            tmp.Human   = arr[i][3] * (1 + val_ILD_bonus) * (0.5 * val_success + 1);
+            tmp.Ammo    = arr[i][4] * (1 + val_ILD_bonus) * (0.5 * val_success + 1);
+            tmp.Food    = arr[i][5] * (1 + val_ILD_bonus) * (0.5 * val_success + 1);
+            tmp.Part    = arr[i][6] * (1 + val_ILD_bonus) * (0.5 * val_success + 1);
 
             tmp.Ticket_total = arr[i][7] + arr[i][8] + arr[i][9] + arr[i][10] + arr[i][11];
 
@@ -1576,10 +1583,10 @@ function callData(){
                 tmp.Ticket_Tokken       =   val_success * arr[i][11] / tmp.Ticket_total + (1 - val_success) * arr[i][11];
             }else{tmp.Ticket_Tokken     = 0;}
         }else{
-            tmp.Human   = arr[i][3];
-            tmp.Ammo    = arr[i][4];
-            tmp.Food    = arr[i][5];
-            tmp.Part    = arr[i][6];
+            tmp.Human   = arr[i][3] * (1 + val_ILD_bonus) ;
+            tmp.Ammo    = arr[i][4] * (1 + val_ILD_bonus) ;
+            tmp.Food    = arr[i][5] * (1 + val_ILD_bonus) ;
+            tmp.Part    = arr[i][6] * (1 + val_ILD_bonus) ;
 
             if(arr[i][7]){
                 tmp.Ticket_makeDoll     = arr[i][7];
